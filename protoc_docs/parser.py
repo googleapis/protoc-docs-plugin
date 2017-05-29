@@ -51,3 +51,81 @@ class CodeGeneratorParser(object):
         if hasattr(input_file, 'buffer'):
             input_file = input_file.buffer
         return cls(CodeGeneratorRequest.FromString(input_file.read()))
+
+    def find_insertions(self):
+        """Find valid insertions and iterate over them.
+
+        Yields:
+            tuple([str, str, str]): A tuple of length 3 with the filename,
+                insertion point name, and content.
+        """
+        # Iterate over each proto file.
+        for proto_file in self._request.proto_file:
+            # Sanity check: If this proto file has no source code
+            # information, skip it.
+            if not proto_file.source_code_info:
+                continue
+            src = proto_file.source_code_info
+
+            # Iterate over each location in the source info.
+            for loc in src.location:
+                # Sanity check: If there are no comments, then we do not
+                # actually care about this location.
+                if not loc.leading_comments and not loc.trailing_comments:
+                    continue
+
+                # Sanity check: For now, we are only able to do anything
+                # useful with comments for message types (path: 4), enum
+                # types (path: 5), and services (path: 6).
+                #
+                # Therefore, ignore anything else.
+                if loc.path[0] not in (4, 5, 6):
+                    continue
+
+                # Never attempt to do anything with any path with 999 in it.
+                if 999 in loc.path:
+                    continue
+
+                # We have comments. We need to determine what the thing is
+                # that they are attached to.
+                filename = proto_file.name.split('/')[-1].replace(
+                    '.proto',
+                    '_pb2.py',
+                )
+                import pdb ; pdb.set_trace()
+                insertion_point = self.parse_path(proto_file, list(loc.path))
+
+    def parse_path(self, cursor, path):
+        """Return the correct thing for a full path.
+
+        Args:
+            message (:class:`google.protobuf.Message`): A Message.
+            path (list): The path; a list of numbers. See descriptor.proto
+                for complete documentation.
+
+        Returns:
+            str: The correct insertion point name.
+        """
+        # The first two ints in the path represent what kind of thing
+        # the comment is attached to (message, enum, or service) and the
+        # order of declaration in the file.
+        #
+        # e.g. [4, 0, ...] would refer to the *first* message, [4, 1, ...] to
+        # the second, etc.
+        for field in cursor._fields.keys():
+            if field.number == path[0]:
+                break
+        cursor = getattr(cursor, field.name)[path[1]]
+        path = path[2:]
+
+        # If the length of the path is 2 or greater, call this method
+        # recursively.
+        if len(path) >= 2:
+            return self.parse_path(cursor, path)
+
+        # At this point we might be done.
+        # If we are, return the appropriate name.
+        if not path:
+            return 'class_scope:%s.%s' % (proto_file.package, field.name)
+
+        import pdb ; pdb.set_trace()

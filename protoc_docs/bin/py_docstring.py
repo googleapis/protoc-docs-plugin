@@ -17,6 +17,7 @@ from __future__ import absolute_import
 import sys
 
 from protoc_docs.parser import CodeGeneratorParser
+from protoc_docs.models import CodeGeneratorResponse
 
 
 def main(*args, input_file=sys.stdin):
@@ -28,8 +29,19 @@ def main(*args, input_file=sys.stdin):
         args = sys.argv[1:]
 
     # Instantiate a parser.
-    parser = CodeGeneratorParser.from_input_file(input_file)
-
     import io
-    with io.open('./out', 'w+') as f:
-        f.write(repr(parser._request))
+    with io.open('data/input_buffer', 'rb') as input_file:
+        parser = CodeGeneratorParser.from_input_file(input_file)
+
+    # Find all the insertion points and make them into a cohesive
+    # CodeGeneratorResponse.
+    # Output the serialized form to stdout.
+    answer = []
+    for filename, insertion_point, content in parser.find_insertions():
+        answer.append(CodeGeneratorResponse.File(
+            name=filename,
+            insertion_point=insertion_point,
+            content=content,
+        ))
+    cgr = CodeGeneratorResponse(file=answer)
+    sys.stdout.write(cgr.ToString())

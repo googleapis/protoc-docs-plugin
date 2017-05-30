@@ -55,33 +55,48 @@ class MessageStructure(object):
         return hash(self.name)
 
     def __repr__(self):
+        tw8 = textwrap.TextWrapper(
+            initial_indent=' ' * 8,
+            subsequent_indent=' ' * 8,
+        )
+        tw12 = textwrap.TextWrapper(
+            initial_indent=' ' * 12,
+            subsequent_indent=' ' * 12,
+        )
+
         answer =  'MessageStructure {\n'
         answer += '    name: {0}\n'.format(self.name)
-        answer += '    docstring:\n{0}\n'.format(
-            textwrap.indent(self.docstring, ' ' * 8),
-        )
+        answer += '    docstring:\n{0}\n'.format(tw8.wrap(self.docstring))
         if len(self.members):
             answer += '    members:\n'
         for k, v in self.members.items():
             answer += '        {name}:\n{doc}\n'.format(
                 name=k,
-                doc=textwrap.indent(v, ' ' * 12),
+                doc=tw12.wrap(v),
             )
         answer += '}\n'
         return answer
 
     def get_python_docstring(self):
+        tw = textwrap.TextWrapper(
+            initial_indent=' ' * 8,
+            subsequent_indent=' ' * 8,
+        )
         answer = ''
 
         # Build the beginning of the docstring.
         if self.docstring:
             answer += self.docstring
             if len(self.members):
-                answer += '\n\nProperties:\n'
+                answer += '\n\n'
+
+        # Label the properties as such if there are any.
+        if len(self.members):
+            answer += 'Properties:\n'
 
         # Build a note about each property of the message.
         for k, v in self.members.items():
-            answer += '    %s:\n%s\n' %  (k, textwrap.indent(v, ' ' * 8))
+            answer += '    %s:\n%s\n' %  (k, tw.wrap(v))
 
         # Done.
         return answer

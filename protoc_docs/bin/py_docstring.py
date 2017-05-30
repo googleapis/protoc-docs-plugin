@@ -20,13 +20,8 @@ from protoc_docs.parser import CodeGeneratorParser
 from protoc_docs.models import CodeGeneratorResponse
 
 
-def main(*args, input_file=sys.stdin, output_file=sys.stdout):
+def main(input_file=sys.stdin, output_file=sys.stdout):
     """Parse a CodeGeneratorRequest and return a CodeGeneratorResponse."""
-
-    # Sanity check: If no arguments were sent, we are using the entrypoint;
-    # use sys.argv.
-    if not args:
-        args = sys.argv[1:]
 
     # Ensure we are getting a bytestream, and writing to a bytestream.
     if hasattr(input_file, 'buffer'):

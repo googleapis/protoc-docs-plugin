@@ -66,7 +66,12 @@ class CodeGeneratorParser(object):
         for proto_file in self._request.proto_file:
             # Sanity check: If this proto file has no source code
             # information, skip it.
-            if not proto_file.source_code_info:
+            #
+            # Descriptor objects lack a meaningful `__nonzero__` method
+            # (never stop being awesome, protoc), so we must explicitly
+            # check `.ByteSize()`. Which is a method, not a property,
+            # because reasons.
+            if not proto_file.source_code_info.ByteSize():
                 continue
             src = proto_file.source_code_info
 
@@ -83,10 +88,6 @@ class CodeGeneratorParser(object):
                 #
                 # Therefore, ignore anything else.
                 if loc.path[0] not in (4, 5, 6):
-                    continue
-
-                # Never attempt to do anything with any path with 999 in it.
-                if 999 in loc.path:
                     continue
 
                 # We have comments. We need to determine what the thing is
@@ -140,10 +141,11 @@ class CodeGeneratorParser(object):
         #
         # e.g. [4, 0, ...] would refer to the *first* message, [4, 1, ...] to
         # the second, etc.
-        for field in struct._fields.keys():
+        field_name = ''
+        for field in [i[0] for i in struct.ListFields()]:
             if field.number == path[0]:
-                break
-        child = getattr(struct, field.name)[path[1]]
+                field_name = field.name
+        child = getattr(struct, field_name)[path[1]]
         path = path[2:]
 
         # Ignore enums.
@@ -199,11 +201,6 @@ class CodeGeneratorParser(object):
             return message_structure
 
         # Done! Return the message structure.
-        if child.name == 'IdempotencyLevel':
-            import sys
-            print(dir(child.DESCRIPTOR), file=sys.stderr)
-            print(child.DESCRIPTOR.name, file=sys.stderr)
-            print(child, file=sys.stderr)
         return message_structure
 
     def _is_mixed_case(self, string):

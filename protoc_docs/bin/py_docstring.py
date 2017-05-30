@@ -35,9 +35,7 @@ def main(*args, input_file=sys.stdin, output_file=sys.stdout):
         output_file = output_file.buffer
 
     # Instantiate a parser.
-    import io
-    with io.open('data/input_buffer', 'rb') as input_file:
-        parser = CodeGeneratorParser.from_input_file(input_file)
+    parser = CodeGeneratorParser.from_input_file(input_file)
 
     # Find all the docs and amalgamate them together.
     comment_data = {}

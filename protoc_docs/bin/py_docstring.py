@@ -20,7 +20,7 @@ from protoc_docs.parser import CodeGeneratorParser
 from protoc_docs.models import CodeGeneratorResponse
 
 
-def main(*args, input_file=sys.stdin):
+def main(*args, input_file=sys.stdin, output_file=sys.stdout):
     """Parse a CodeGeneratorRequest and return a CodeGeneratorResponse."""
 
     # Sanity check: If no arguments were sent, we are using the entrypoint;
@@ -28,20 +28,32 @@ def main(*args, input_file=sys.stdin):
     if not args:
         args = sys.argv[1:]
 
+    # Ensure we are getting a bytestream, and writing to a bytestream.
+    if hasattr(input_file, 'buffer'):
+        input_file = input_file.buffer
+    if hasattr(output_file, 'buffer'):
+        output_file = output_file.buffer
+
     # Instantiate a parser.
     import io
     with io.open('data/input_buffer', 'rb') as input_file:
         parser = CodeGeneratorParser.from_input_file(input_file)
 
-    # Find all the insertion points and make them into a cohesive
-    # CodeGeneratorResponse.
-    # Output the serialized form to stdout.
+    # Find all the docs and amalgamate them together.
+    comment_data = {}
+    for filename, message_structure in parser.find_docs():
+        comment_data.setdefault(filename, set())
+        comment_data[filename].add(message_structure)
+
+    # Iterate over the data that came back and parse it into a single,
+    # coherent CodeGeneratorResponse.
     answer = []
-    for filename, insertion_point, content in parser.find_insertions():
-        answer.append(CodeGeneratorResponse.File(
-            name=filename,
-            insertion_point=insertion_point,
-            content=content,
-        ))
+    for fn, structs in comment_data.items():
+        for struct in structs:
+            answer.append(CodeGeneratorResponse.File(
+                name=fn.replace('.proto', '_pb2.py'),
+                insertion_point='class_scope:%s' % struct.name,
+                content='__doc__ = """%s"""' % struct.get_python_docstring(),
+            ))
     cgr = CodeGeneratorResponse(file=answer)
-    sys.stdout.write(cgr.ToString())
+    output_file.write(cgr.SerializeToString())

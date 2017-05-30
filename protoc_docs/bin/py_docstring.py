@@ -51,7 +51,12 @@ def main(*args, input_file=sys.stdin, output_file=sys.stdout):
             answer.append(CodeGeneratorResponse.File(
                 name=fn.replace('.proto', '_pb2.py'),
                 insertion_point='class_scope:%s' % struct.name,
-                content='__doc__ = """%s"""' % struct.get_python_docstring(),
+
+                # Seriously, protoc, an insertion point but no trailing
+                # comma before it?
+                content=',\n__doc__ = """{docstring}""",'.format(
+                    docstring=struct.get_python_docstring(),
+                ),
             ))
     cgr = CodeGeneratorResponse(file=answer)
     output_file.write(cgr.SerializeToString())

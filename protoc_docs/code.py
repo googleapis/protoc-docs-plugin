@@ -81,7 +81,7 @@ class MessageStructure(object):
 
         # Build a note about each property of the message.
         for k, v in self.members.items():
-            answer += '    %s: %s' %  (k, v)
+            answer += '    %s:\n%s\n' %  (k, textwrap.indent(v, ' ' * 8))
 
         # Done.
         return answer

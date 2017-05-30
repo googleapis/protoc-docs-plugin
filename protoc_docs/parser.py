@@ -91,16 +91,26 @@ class CodeGeneratorParser(object):
 
                 # We have comments. We need to determine what the thing is
                 # that they are attached to.
-                filename = proto_file.name.split('/')[-1]
+                filename = proto_file.name
                 comment = '{leading}\n{trailing}'.format(
                     leading=loc.leading_comments,
                     trailing=loc.trailing_comments,
                 ).strip()
-                yield (filename, self.parse_path(
+                message_structure = self.parse_path(
                     docstring=comment,
                     path=list(loc.path),
                     struct=proto_file,
-                ))
+                )
+
+                # Sanity check: If we got None back for the message_structure,
+                # skip. This happens (right now) for enums because there is
+                # no insertion point for them and no way to gracefully move
+                # on within that method.
+                if message_structure is None:
+                    continue
+
+                # Yield back what we need.
+                yield (filename, message_structure)
 
     def parse_path(self, struct, path, docstring, message_structure=None):
         """Return the correct thing for a full path.
@@ -135,6 +145,16 @@ class CodeGeneratorParser(object):
                 break
         child = getattr(struct, field.name)[path[1]]
         path = path[2:]
+
+        # Ignore enums.
+        #
+        # We ignore enums because there is no valid insertion point for them,
+        # and protoc will not write anything if we offer any invalid
+        # insertion point, and there does not seem to be any graceful
+        # fallback available (nor is there a way to get a list of insertion
+        # points to check against).
+        if child.DESCRIPTOR.name == 'EnumDescriptorProto':
+            return
 
         # If applicable, create the MessageStructure object for this.
         if not message_structure:
@@ -179,6 +199,11 @@ class CodeGeneratorParser(object):
             return message_structure
 
         # Done! Return the message structure.
+        if child.name == 'IdempotencyLevel':
+            import sys
+            print(dir(child.DESCRIPTOR), file=sys.stderr)
+            print(child.DESCRIPTOR.name, file=sys.stderr)
+            print(child, file=sys.stderr)
         return message_structure
 
     def _is_mixed_case(self, string):

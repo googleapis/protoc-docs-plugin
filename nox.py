@@ -25,13 +25,4 @@ def unit_tests(session, python_version):
     session.interpreter = 'python%s' % python_version
     session.install('mock', 'pytest', 'pytest-cov')
     session.install('-e', '.')
-    session.run('pytest', '--cov=protoc_docs', '--cov-append', '--cov-report=')
-
-
-@nox.session
-def coverage(session):
-    session.interpreter = 'python3.6'
-    session.install('coverage')
-    session.run('coverage', 'html')
-    session.run('coverage', 'report')
-    session.run('coverage', 'erase')
+    session.run('pytest', '--cov=protoc_docs')

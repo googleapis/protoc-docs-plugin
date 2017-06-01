@@ -45,7 +45,7 @@ class MessageStructureTests(unittest.TestCase):
         foo.members['bar'] = 'The spam of the eggs.'
         docstring = foo.get_python_docstring()
         assert 'Make a foo.' in docstring
-        assert 'Properties:' in docstring
+        assert 'Attributes:' in docstring
         assert 'bar:' in docstring
         assert 'The spam of the eggs.' in docstring
 
@@ -54,7 +54,7 @@ class MessageStructureTests(unittest.TestCase):
         foo.members['bar'] = 'The spam of the eggs.'
         docstring = foo.get_python_docstring()
         assert 'foo' not in docstring
-        assert 'Properties:' in docstring
+        assert 'Attributes:' in docstring
         assert 'bar:' in docstring
         assert 'The spam of the eggs.' in docstring
 
@@ -63,4 +63,4 @@ class MessageStructureTests(unittest.TestCase):
         foo.docstring = 'Make a foo.'
         docstring = foo.get_python_docstring()
         assert 'Make a foo.' in docstring
-        assert 'Properties:' not in docstring
+        assert 'Attributes:' not in docstring

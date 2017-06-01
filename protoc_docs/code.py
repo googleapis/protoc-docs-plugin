@@ -66,13 +66,15 @@ class MessageStructure(object):
 
         answer =  'MessageStructure {\n'
         answer += '    name: {0}\n'.format(self.name)
-        answer += '    docstring:\n{0}\n'.format(tw8.wrap(self.docstring))
+        answer += '    docstring:\n{0}\n'.format(
+            '\n'.join(tw8.wrap(self.docstring)),
+        )
         if len(self.members):
             answer += '    members:\n'
         for k, v in self.members.items():
             answer += '        {name}:\n{doc}\n'.format(
                 name=k,
-                doc=tw12.wrap(v),
+                doc='\n'.join(tw12.wrap(v)),
             )
         answer += '}\n'
         return answer
@@ -92,11 +94,11 @@ class MessageStructure(object):
 
         # Label the properties as such if there are any.
         if len(self.members):
-            answer += 'Properties:\n'
+            answer += 'Attributes:\n'
 
         # Build a note about each property of the message.
         for k, v in self.members.items():
-            answer += '    %s:\n%s\n' %  (k, tw.wrap(v))
+            answer += '    %s:\n%s\n' %  (k, '\n'.join(tw.wrap(v)))
 
         # Done.
         return answer

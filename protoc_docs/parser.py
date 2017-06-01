@@ -64,6 +64,10 @@ class CodeGeneratorParser(object):
         """
         # Iterate over each proto file.
         for proto_file in self._request.proto_file:
+            # Ignore any intermediate proto files.
+            if proto_file.name not in self._request.file_to_generate:
+                continue
+
             # Sanity check: If this proto file has no source code
             # information, skip it.
             #
@@ -83,11 +87,13 @@ class CodeGeneratorParser(object):
                     continue
 
                 # Sanity check: For now, we are only able to do anything
-                # useful with comments for message types (path: 4), enum
+                # useful with comments for message types (path: 4)
+                #
+                # Eventually it would be nice to be able to add enum
                 # types (path: 5), and services (path: 6).
                 #
-                # Therefore, ignore anything else.
-                if loc.path[0] not in (4, 5, 6):
+                # For now, ignore anything else.
+                if loc.path[0] != 4:
                     continue
 
                 # We have comments. We need to determine what the thing is

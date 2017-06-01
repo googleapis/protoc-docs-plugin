@@ -173,6 +173,11 @@ class CodeGeneratorParser(object):
                 ),
             )
 
+        # If the length of the path is 2 or greater, call this method
+        # recursively.
+        if len(path) >= 2:
+            return self.parse_path(child, path, docstring, message_structure)
+
         # Write the documentation to the appropriate spot.
         # This entails figuring out what the Message (basically the "class")
         # is, and then whether this is class-level or property-level
@@ -189,11 +194,6 @@ class CodeGeneratorParser(object):
             message_structure.docstring = docstring
         else:
             message_structure.members[child.name] = docstring
-
-        # If the length of the path is 2 or greater, call this method
-        # recursively.
-        if len(path) >= 2:
-            return self.parse_path(child, path, docstring, message_structure)
 
         # If the length of the path is now 1...
         #

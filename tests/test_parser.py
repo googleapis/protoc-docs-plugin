@@ -50,7 +50,7 @@ class TestCodeGeneratorParser(unittest.TestCase):
 
         # Make incredibly basic assertions about the collected data.
         assert len(answer) == 1
-        assert len(answer['protos/descriptor.proto']) == 24
+        assert len(answer['protos/descriptor.proto']) == 22
 
     def test_find_docs_no_output_files(self):
         # Read the file, but this time wipe out the list of target output

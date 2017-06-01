@@ -14,6 +14,8 @@
 
 from __future__ import absolute_import
 
+import textwrap
+
 from protoc_docs.code import MessageStructure
 from protoc_docs.models import CodeGeneratorRequest
 
@@ -99,10 +101,10 @@ class CodeGeneratorParser(object):
                 # We have comments. We need to determine what the thing is
                 # that they are attached to.
                 filename = proto_file.name
-                comment = '{leading}\n{trailing}'.format(
+                comment = textwrap.dedent('{leading}\n{trailing}'.format(
                     leading=loc.leading_comments,
                     trailing=loc.trailing_comments,
-                ).strip()
+                ))
                 message_structure = self.parse_path(
                     docstring=comment,
                     path=list(loc.path),

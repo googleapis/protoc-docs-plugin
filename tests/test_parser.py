@@ -52,6 +52,20 @@ class TestCodeGeneratorParser(unittest.TestCase):
         assert len(answer) == 1
         assert len(answer['protos/descriptor.proto']) == 24
 
+    def test_find_docs_no_output_files(self):
+        # Read the file, but this time wipe out the list of target output
+        # files; this should make no files be written.
+        with io.open('%s/data/input_buffer' % curdir, 'rb') as file_:
+            cgp = parser.CodeGeneratorParser.from_input_file(file_)
+        cgp._request.ClearField('file_to_generate')
+
+        # There should be no data this time.
+        answer = {}
+        for filename, message_structure in cgp.find_docs():
+            answer.setdefault(filename, set())
+            answer[filename].add(message_structure)
+        assert len(answer) == 0
+
     def test_find_docs_no_source_info(self):
         # Read the file, but this time wipe out the source code info;
         # the proto specification says this is optional.

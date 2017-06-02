@@ -33,6 +33,7 @@ setuptools.setup(
     license='Apache-2.0',
     install_requires=(
         'protobuf >= 3.3.0',
+        'pypandoc >= 1.4',
     ),
     packages=setuptools.find_packages(),
     entry_points={

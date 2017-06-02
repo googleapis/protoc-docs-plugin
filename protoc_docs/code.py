@@ -14,6 +14,7 @@
 
 from __future__ import absolute_import
 
+from pypandoc import convert_text
 
 import collections
 import textwrap
@@ -88,7 +89,7 @@ class MessageStructure(object):
 
         # Build the beginning of the docstring.
         if self.docstring:
-            answer += self.docstring
+            answer += convert_text(self.docstring, 'rst', format='md')
             if len(self.members):
                 answer += '\n\n'
 
@@ -98,6 +99,7 @@ class MessageStructure(object):
 
         # Build a note about each property of the message.
         for k, v in self.members.items():
+            v = convert_text(v, 'rst', format='md')
             answer += '    %s:\n%s\n' %  (k, '\n'.join(tw.wrap(v)))
 
         # Done.

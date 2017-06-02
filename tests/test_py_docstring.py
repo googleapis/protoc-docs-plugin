@@ -57,4 +57,5 @@ class PyDocstringTests(unittest.TestCase):
             py_docstring.main(input_file=file_, output_file=output_file)
 
         # Just ensure that the bytestream is the appropriate length.
-        assert len(output_file.getvalue()) == 25344
+        # This is a terrible test. :-/
+        assert len(output_file.getvalue()) == 25043

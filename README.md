@@ -7,11 +7,15 @@ availability of appropriate insertion points in those languages.
 
 ### Installation & Dependencies
 
-This package depends only on the current version of `protobuf` from PyPI.
+This package depends on the current version of `protobuf` and `pypandoc`
+from PyPI.
 
 ```bash
 $ pip install protoc-docs-plugin
 ```
+
+Additionally, this package also depends on the `pandoc` OS package, which
+you will need to install from your OS package manager.
 
 While it will run standalone as well, it only ever actually makes sense
 to invoke it from `protoc`.

@@ -23,7 +23,7 @@ import setuptools
 
 
 setuptools.setup(
-    name='protoc_docs_plugin',
+    name='protoc-docs-plugin',
     version='0.1.0',
     description='Plugin for reading and writing documentation from '
                 'protobuf files into existing generated protoc output.',

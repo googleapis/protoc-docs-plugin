@@ -16,6 +16,9 @@ jobs:
     steps:
       - checkout
       - run:
+          name: Install pandoc
+          command: apt-get update && apt-get install -y pandoc
+      - run:
           name: Install nox and codecov.
           command: pip install --upgrade nox-automation codecov
       - run:
@@ -28,6 +31,9 @@ jobs:
       - image: python:3.4
     steps:
       - checkout
+      - run:
+          name: Install pandoc
+          command: apt-get update && apt-get install -y pandoc
       - run:
           name: Install nox and codecov.
           command: pip install --upgrade nox-automation codecov
@@ -42,6 +48,9 @@ jobs:
     steps:
       - checkout
       - run:
+          name: Install pandoc
+          command: apt-get update && apt-get install -y pandoc
+      - run:
           name: Install nox and codecov.
           command: pip install --upgrade nox-automation codecov
       - run:
@@ -54,6 +63,9 @@ jobs:
       - image: python:3.6
     steps:
       - checkout
+      - run:
+          name: Install pandoc
+          command: apt-get update && apt-get install -y pandoc
       - run:
           name: Install nox and codecov.
           command: pip install --upgrade nox-automation codecov

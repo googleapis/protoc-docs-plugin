@@ -50,7 +50,32 @@ class TestCodeGeneratorParser(unittest.TestCase):
 
         # Make incredibly basic assertions about the collected data.
         assert len(answer) == 1
-        assert len(answer['protos/descriptor.proto']) == 24
+        assert {i.name for i in answer['protos/descriptor.proto']} == {
+            'google.protobuf.FileDescriptorSet',
+            'google.protobuf.FieldOptions',
+            'google.protobuf.FileOptions',
+            'google.protobuf.MessageOptions',
+            'google.protobuf.FileDescriptorProto',
+            'google.protobuf.FieldDescriptorProto',
+            'google.protobuf.ServiceOptions',
+            'google.protobuf.MethodDescriptorProto',
+            'google.protobuf.EnumDescriptorProto',
+            'google.protobuf.EnumValueDescriptorProto',
+            'google.protobuf.UninterpretedOption.NamePart',
+            'google.protobuf.SourceCodeInfo',
+            'google.protobuf.SourceCodeInfo.Location',
+            'google.protobuf.GeneratedCodeInfo.Annotation',
+            'google.protobuf.MethodOptions',
+            'google.protobuf.DescriptorProto',
+            'google.protobuf.GeneratedCodeInfo',
+            'google.protobuf.EnumValueOptions',
+            'google.protobuf.UninterpretedOption',
+            'google.protobuf.ServiceDescriptorProto',
+            'google.protobuf.OneofOptions',
+            'google.protobuf.DescriptorProto.ReservedRange',
+            'google.protobuf.OneofDescriptorProto',
+            'google.protobuf.EnumOptions',
+        }
 
     def test_find_docs_no_output_files(self):
         # Read the file, but this time wipe out the list of target output

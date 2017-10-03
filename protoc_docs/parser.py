@@ -178,6 +178,18 @@ class CodeGeneratorParser(object):
         # If the length of the path is 2 or greater, call this method
         # recursively.
         if len(path) >= 2:
+            # Nested types are possible.
+            #
+            # In this case, we need to ensure that we do not lose
+            # the outer layers of the nested type name; otherwise the
+            # insertion point name will be wrong.
+            if not message_structure.name.endswith(child.name):
+                message_structure = MessageStructure.get_or_create(
+                    name='{parent}.{child}'.format(
+                        child=child.name,
+                        parent=message_structure.name,
+                    ),
+                )
             return self.parse_path(child, path, docstring, message_structure)
 
         # Write the documentation to the appropriate spot.

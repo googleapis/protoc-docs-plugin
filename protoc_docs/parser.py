@@ -167,7 +167,6 @@ class CodeGeneratorParser(object):
             return
 
         # If applicable, create the MessageStructure object for this.
-        # import pdb ; pdb.set_trace()
         if not message_structure:
             message_structure = MessageStructure.get_or_create(
                 name='{pkg}.{name}'.format(

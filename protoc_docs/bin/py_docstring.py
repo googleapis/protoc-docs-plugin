@@ -62,7 +62,7 @@ def main(input_file=sys.stdin, output_file=sys.stdout):
     cgr = CodeGeneratorResponse(file=answer)
     output_file.write(cgr.SerializeToString())
 
-def _init_files(fns=[]):
+def _init_files(fns=()):
     """Add init files to every directory generated."""
     files = set()
     for filename in fns:

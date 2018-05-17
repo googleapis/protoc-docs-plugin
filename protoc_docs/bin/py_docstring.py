@@ -14,6 +14,7 @@
 
 from __future__ import absolute_import
 
+import os
 import sys
 
 from protoc_docs.parser import CodeGeneratorParser
@@ -53,5 +54,20 @@ def main(input_file=sys.stdin, output_file=sys.stdout):
                     docstring=struct.get_python_docstring(),
                 ),
             ))
+    for fn in _init_files(comment_data.keys()):
+        answer.append(CodeGeneratorResponse.File(
+            name=fn,
+            content='',
+        ))
     cgr = CodeGeneratorResponse(file=answer)
     output_file.write(cgr.SerializeToString())
+
+def _init_files(fns=()):
+    """Add init files to every directory generated."""
+    files = set()
+    for filename in fns:
+        if filename.rfind('/') >= 0:
+            files.add(os.path.join(filename[:filename.rfind('/')], "__init__.py"))
+        else:
+            files.add("__init__.py")
+    return files

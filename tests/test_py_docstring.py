@@ -58,4 +58,9 @@ class PyDocstringTests(unittest.TestCase):
 
         # Just ensure that the bytestream is the appropriate length.
         # This is a terrible test. :-/
-        assert len(output_file.getvalue()) == 25294
+        assert len(output_file.getvalue()) == 25318
+
+    def test_init_files(self):
+        files = ['foo.proto', '/bar.proto', 'baz/qux/corge.proto']
+        expected = {'__init__.py', 'baz/qux/__init__.py'}
+        assert py_docstring._init_files(files) == expected

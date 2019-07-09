@@ -103,4 +103,4 @@ class MessageStructure(object):
             answer += '    %s:\n%s\n' %  (k, '\n'.join(tw.wrap(v)))
 
         # Done.
-        return answer
+        return answer.encode('utf-8')

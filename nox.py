@@ -22,7 +22,7 @@ import nox
 def unit_tests(session, python_version):
     """Run the unit tests."""
 
-    session.venv.interpreter = 'python%s' % python_version
+    session.virtualenv.interpreter = 'python%s' % python_version
     session.install('mock', 'pytest', 'pytest-cov')
     session.install('-e', '.')
     session.run('pytest', '--cov=protoc_docs')

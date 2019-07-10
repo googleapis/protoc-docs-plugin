@@ -50,7 +50,7 @@ def main(input_file=sys.stdin, output_file=sys.stdout):
 
                 # Seriously, protoc, an insertion point but no trailing
                 # comma before it?
-                content=',\n__doc__ = """{docstring}""",'.format(
+                content=',\n\'__doc__\' : """{docstring}""",'.format(
                     docstring=struct.get_python_docstring(),
                 ),
             ))

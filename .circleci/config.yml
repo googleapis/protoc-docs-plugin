@@ -23,7 +23,7 @@ jobs:
           command: pip install --upgrade nox-automation codecov
       - run:
           name: Run unit tests.
-          command: nox -e "unit_tests(python_version='2.7')"
+          command: nox --noxfile nox.py -e "unit_tests(python_version='2.7')"
     working_directory: /usr/src/protoc_docs_plugin/
 
   unit-python3.4:
@@ -39,7 +39,7 @@ jobs:
           command: pip install --upgrade nox-automation codecov
       - run:
           name: Run unit tests.
-          command: nox -e "unit_tests(python_version='3.4')"
+          command: nox --noxfile nox.py -e "unit_tests(python_version='3.4')"
     working_directory: /usr/src/protoc_docs_plugin/
 
   unit-python3.5:
@@ -55,7 +55,7 @@ jobs:
           command: pip install --upgrade nox-automation codecov
       - run:
           name: Run unit tests.
-          command: nox -e "unit_tests(python_version='3.5')"
+          command: nox --noxfile nox.py -e "unit_tests(python_version='3.5')"
     working_directory: /usr/src/protoc_docs_plugin/
 
   unit-python3.6:
@@ -71,7 +71,7 @@ jobs:
           command: pip install --upgrade nox-automation codecov
       - run:
           name: Run unit tests.
-          command: nox -e "unit_tests(python_version='3.6')"
+          command: nox --noxfile nox.py -e "unit_tests(python_version='3.6')"
     working_directory: /usr/src/protoc_docs_plugin/
 
 

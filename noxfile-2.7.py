@@ -12,17 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import os
-
 import nox
 
 
 @nox.session
-@nox.parametrize('python_version', ['2.7', '3.4', '3.5', '3.6'])
-def unit_tests(session, python_version):
+def unit(session):
     """Run the unit tests."""
 
-    session.interpreter = 'python%s' % python_version
+    session.interpreter = 'python2.7'
     session.install('mock', 'pytest', 'pytest-cov')
     session.install('-e', '.')
     session.run('pytest', '--cov=protoc_docs')

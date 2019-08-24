@@ -15,10 +15,11 @@
 import nox
 
 
-@nox.session(python=['2.7', '3.5', '3.6', '3.7'])
+@nox.session
 def unit(session):
     """Run the unit tests."""
 
+    session.interpreter = 'python2.7'
     session.install('mock', 'pytest', 'pytest-cov')
     session.install('-e', '.')
     session.run('pytest', '--cov=protoc_docs')

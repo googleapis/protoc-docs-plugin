@@ -20,10 +20,10 @@ jobs:
           command: apt-get update && apt-get install -y pandoc
       - run:
           name: Install nox and codecov.
-          command: pip install --upgrade nox codecov
+          command: pip install --upgrade nox-automation codecov
       - run:
           name: Run unit tests.
-          command: nox -s unit-2.7
+          command: nox -f noxfile-2.7.py -s unit
     working_directory: /usr/src/protoc_docs_plugin/
 
   unit-python3.5:

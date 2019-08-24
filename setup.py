@@ -22,7 +22,7 @@ import setuptools
 
 setuptools.setup(
     name='protoc-docs-plugin',
-    version='0.3.0',
+    version='0.4.0',
     description='Plugin for reading and writing documentation from '
                 'protobuf files into existing generated protoc output.',
     author='Luke Sneeringer',
@@ -30,7 +30,7 @@ setuptools.setup(
     url='https://github.com/googleapis/protoc-docs-plugin',
     license='Apache-2.0',
     install_requires=(
-        'protobuf >= 3.3.0',
+        'protobuf >= 3.7.0',
         'pypandoc >= 1.4',
     ),
     packages=setuptools.find_packages(),

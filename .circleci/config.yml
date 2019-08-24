@@ -20,26 +20,10 @@ jobs:
           command: apt-get update && apt-get install -y pandoc
       - run:
           name: Install nox and codecov.
-          command: pip install --upgrade nox-automation codecov
+          command: pip install --upgrade nox codecov
       - run:
           name: Run unit tests.
-          command: nox -e "unit_tests(python_version='2.7')"
-    working_directory: /usr/src/protoc_docs_plugin/
-
-  unit-python3.4:
-    docker:
-      - image: python:3.4
-    steps:
-      - checkout
-      - run:
-          name: Install pandoc
-          command: apt-get update && apt-get install -y pandoc
-      - run:
-          name: Install nox and codecov.
-          command: pip install --upgrade nox-automation codecov
-      - run:
-          name: Run unit tests.
-          command: nox -e "unit_tests(python_version='3.4')"
+          command: nox -s unit-2.7
     working_directory: /usr/src/protoc_docs_plugin/
 
   unit-python3.5:
@@ -52,10 +36,10 @@ jobs:
           command: apt-get update && apt-get install -y pandoc
       - run:
           name: Install nox and codecov.
-          command: pip install --upgrade nox-automation codecov
+          command: pip install --upgrade nox codecov
       - run:
           name: Run unit tests.
-          command: nox -e "unit_tests(python_version='3.5')"
+          command: nox -s unit-3.5
     working_directory: /usr/src/protoc_docs_plugin/
 
   unit-python3.6:
@@ -68,18 +52,33 @@ jobs:
           command: apt-get update && apt-get install -y pandoc
       - run:
           name: Install nox and codecov.
-          command: pip install --upgrade nox-automation codecov
+          command: pip install --upgrade nox codecov
       - run:
           name: Run unit tests.
-          command: nox -e "unit_tests(python_version='3.6')"
+          command: nox -s unit-3.6
     working_directory: /usr/src/protoc_docs_plugin/
 
+  unit-python3.7:
+    docker:
+      - image: python:3.7
+    steps:
+      - checkout
+      - run:
+          name: Install pandoc
+          command: apt-get update && apt-get install -y pandoc
+      - run:
+          name: Install nox and codecov.
+          command: pip install --upgrade nox codecov
+      - run:
+          name: Run unit tests.
+          command: nox -s unit-3.7
+    working_directory: /usr/src/protoc_docs_plugin/
 
 workflows:
   version: 2
   tests:
     jobs:
       - unit-python2.7
-      - unit-python3.4
       - unit-python3.5
       - unit-python3.6
+      - unit-python3.7

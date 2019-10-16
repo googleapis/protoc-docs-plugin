@@ -3,7 +3,7 @@ version: 2.0
 jobs:
   build:
     docker:
-      - image: python:3.6
+      - image: python:3.8
     steps:
       - run:
           name: Hello world!
@@ -28,7 +28,7 @@ jobs:
 
   unit-python3.5:
     docker:
-      - image: python:3.5
+      - image: python:3.8
     steps:
       - checkout
       - run:
@@ -44,7 +44,7 @@ jobs:
 
   unit-python3.6:
     docker:
-      - image: python:3.6
+      - image: python:3.8
     steps:
       - checkout
       - run:
@@ -60,7 +60,7 @@ jobs:
 
   unit-python3.7:
     docker:
-      - image: python:3.7
+      - image: python:3.8
     steps:
       - checkout
       - run:

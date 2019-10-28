@@ -14,11 +14,9 @@
 
 from __future__ import absolute_import
 
-from pypandoc import convert_text
-
 import collections
 import textwrap
-
+import sys
 
 class MessageStructure(object):
     """A class representing the structure for a proto message.
@@ -27,6 +25,15 @@ class MessageStructure(object):
     will return the same object.
     """
     _registry = {}
+
+    # A random sequence of alphanumerical characters used as a token to
+    # concatenate different docstrings together, then make a single pypandoc
+    # call and split the returned result again using the same token. This allows
+    # us to reduce an average number of calls to a child process (pypandoc
+    # starts a pandoc subprocess) from several hundreds to a single call per
+    # API. This execution reduces time by several orders of magnitude
+    # (from ~10 secs to fractions of a second per API).
+    _BATCH_TOKEN = "D55406F6B511E8"
 
     @classmethod
     def get_or_create(cls, name):
@@ -80,27 +87,53 @@ class MessageStructure(object):
         answer += '}\n'
         return answer
 
-    def get_python_docstring(self):
+    def get_meta_docstring(self):
+        meta_docstring = ''
+
+        if self.docstring:
+            meta_docstring += self.docstring
+
+        # Concatenate members adding new line and a _BATCH_TOKEN between each
+        # member, such that the members list can be restored later (after
+        # formatting) by simply splitting the big string by the same
+        # _BATCH_TOKEN.
+        for k, v in self.members.items():
+            if meta_docstring:
+                meta_docstring += "\n%s" % MessageStructure._BATCH_TOKEN
+            meta_docstring += v
+
+        return meta_docstring
+
+    def get_python_docstring(self, docstring = None):
         tw = textwrap.TextWrapper(
             initial_indent=' ' * 8,
             subsequent_indent=' ' * 8,
         )
+
+        meta_docstring = docstring if docstring else self.get_meta_docstring()
+
         answer = ''
 
-        # Build the beginning of the docstring.
+        # Reconstruct the docstrings list by splitting the meta_docstring
+        # by same _BATCH_TOKEN which was used to concatenate them
+        meta_vals = meta_docstring.split(MessageStructure._BATCH_TOKEN)
+        meta_index = 0
         if self.docstring:
-            answer += convert_text(self.docstring, 'rst', format='md')
+            answer += meta_vals[meta_index]
+            meta_index += 1
             if len(self.members):
-                answer += '\n\n'
-
-        # Label the properties as such if there are any.
+                answer += '\n'
         if len(self.members):
             answer += 'Attributes:\n'
 
-        # Build a note about each property of the message.
-        for k, v in self.members.items():
-            v = convert_text(v, 'rst', format='md')
+        keys = list(self.members.keys())
+        keys_index = 0
+        while meta_index < len(meta_vals) and keys_index < len(keys):
+            v = meta_vals[meta_index]
+            k = keys[keys_index]
             answer += '    %s:\n%s\n' %  (k, '\n'.join(tw.wrap(v)))
+            meta_index += 1
+            keys_index += 1
 
         # Done.
         return answer

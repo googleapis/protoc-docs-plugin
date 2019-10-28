@@ -20,7 +20,7 @@ import unittest
 
 import pytest
 
-from protoc_docs import models
+from google.protobuf.compiler.plugin_pb2 import CodeGeneratorRequest
 from protoc_docs import parser
 
 
@@ -31,7 +31,7 @@ class TestCodeGeneratorParser(unittest.TestCase):
     def test_from_input_file(self):
         with io.open('%s/data/input_buffer' % curdir, 'rb') as file_:
             cgp = parser.CodeGeneratorParser.from_input_file(file_)
-        assert isinstance(cgp._request, models.CodeGeneratorRequest)
+        assert isinstance(cgp._request, CodeGeneratorRequest)
 
     def test_constructor_bad_argument(self):
         with pytest.raises(TypeError):
@@ -106,7 +106,7 @@ class TestCodeGeneratorParser(unittest.TestCase):
         assert len(answer) == 0
 
     def test_is_mixed_case(self):
-        cgp = parser.CodeGeneratorParser(models.CodeGeneratorRequest())
+        cgp = parser.CodeGeneratorParser(CodeGeneratorRequest())
         assert cgp._is_mixed_case('foo') is False
         assert cgp._is_mixed_case('FOO') is False
         assert cgp._is_mixed_case('Foo') is True

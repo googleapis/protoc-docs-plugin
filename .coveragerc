@@ -9,3 +9,4 @@ exclude_lines =
     pragma: NO COVER
     # Ignore debug-only repr
     def __repr__
+    if __name__ == '__main__'

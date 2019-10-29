@@ -17,7 +17,7 @@ from __future__ import absolute_import
 import textwrap
 
 from protoc_docs.code import MessageStructure
-from protoc_docs.models import CodeGeneratorRequest
+from google.protobuf.compiler.plugin_pb2 import CodeGeneratorRequest
 
 
 class CodeGeneratorParser(object):
@@ -28,7 +28,7 @@ class CodeGeneratorParser(object):
     where those comments belong.
 
     Args:
-        request (:class:`protoc_docs_plugin.models.CodeGeneratorRequest`):
+        request (:class:`google.protobuf.compiler.plugin_pb2.CodeGeneratorRequest`):
             The CodeGeneratorRequest, as an instantiated protobuf object.
 
     Raises

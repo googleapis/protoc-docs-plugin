@@ -1,0 +1,39 @@
+load("//:docs_plugin.bzl", "pandoc_binary", "pandoc_toolchain")
+
+toolchain_type(
+    name = "pandoc_toolchain_type",
+    visibility = ["//visibility:public"],
+)
+
+pandoc_toolchain(
+    exec_compatible_with = [
+        "@bazel_tools//platforms:linux",
+        "@bazel_tools//platforms:x86_64",
+    ],
+    platform = "linux",
+)
+
+pandoc_toolchain(
+    exec_compatible_with = [
+        "@bazel_tools//platforms:osx",
+        "@bazel_tools//platforms:x86_64",
+    ],
+    platform = "macOS",
+)
+
+pandoc_binary(
+    name = "pandoc_binary"
+)
+
+py_binary(
+    name = "docs_plugin",
+    main = "protoc_docs/bin/py_docstring.py",
+    srcs = glob(["protoc_docs/**/*.py"]),
+    visibility = ["//visibility:public"],
+    data = [":pandoc_binary"],
+    deps = [
+        "@com_google_protobuf//:protobuf_python",
+        "@pypi_pypandoc//:lib",
+    ],
+    srcs_version = "PY3"
+)

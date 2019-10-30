@@ -10,3 +10,4 @@ exclude_lines =
     # Ignore debug-only repr
     def __repr__
     if __name__ == '__main__'
+    https://cloud.google.com

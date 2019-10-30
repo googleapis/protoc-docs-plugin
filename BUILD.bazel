@@ -35,5 +35,16 @@ py_binary(
         "@com_google_protobuf//:protobuf_python",
         "@pypi_pypandoc//:lib",
     ],
-    srcs_version = "PY3"
+)
+
+py_binary(
+    name = "docs_desc_converter",
+    main = "protoc_docs/bin/py_desc_converter.py",
+    srcs = glob(["protoc_docs/**/*.py"]),
+    visibility = ["//visibility:public"],
+    data = [":pandoc_binary"],
+    deps = [
+        "@com_google_protobuf//:protobuf_python",
+        "@pypi_pypandoc//:lib",
+    ],
 )

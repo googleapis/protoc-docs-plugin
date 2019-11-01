@@ -19,6 +19,6 @@ import nox
 def unit(session):
     """Run the unit tests."""
 
-    session.install('mock', 'pytest', 'pytest-cov')
+    session.install('mock', 'pytest', 'pytest-cov', 'restructuredtext_lint')
     session.install('-e', '.')
     session.run('pytest', '--cov=protoc_docs')

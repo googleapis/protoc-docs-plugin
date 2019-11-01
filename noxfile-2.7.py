@@ -20,6 +20,6 @@ def unit(session):
     """Run the unit tests."""
 
     session.interpreter = 'python2.7'
-    session.install('mock', 'pytest', 'pytest-cov')
+    session.install('mock', 'pytest', 'pytest-cov', 'restructuredtext_lint')
     session.install('-e', '.')
     session.run('pytest', '--cov=protoc_docs')

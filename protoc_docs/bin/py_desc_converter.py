@@ -20,8 +20,8 @@ import pypandoc
 from google.protobuf import descriptor_pb2 as desc
 
 
-class CommentsBuilder(object):
-    """Comments builder which converts comments in a batch by calling
+class CommentsConverter(object):
+    """Comments converter which converts comments in a batch by calling
     convert_text only once for the whole batch. The ``pypandoc.convert_text``
     call spawns a child ``pandoc`` subprocess, so it is an expensive operation
     and we want to minimize the number of such calls.
@@ -48,6 +48,10 @@ class CommentsBuilder(object):
     def put_comment(self, comment):
         """Put a comment in a batch for future processing by ``pypandoc``.
 
+        This method must be called one or more times prior calling
+        ``convert()``, if this method is called after ``convert()`` its behavior
+        is undefined.
+
         Args:
             comment (str): The comment to convert.
         """
@@ -60,7 +64,7 @@ class CommentsBuilder(object):
         # Try to avoid conversion for comments without special characters in the
         # markdown
         if any([i in token for i in '`[]*_']):
-            if len(self.converted_comments) > 0:
+            if self.converted_comments:
                 token = "\n%s%s" % (self._BATCH_TOKEN, token)
             self.converted_comments[self._index] = token
         else:
@@ -68,9 +72,12 @@ class CommentsBuilder(object):
 
         self._index += 1
 
-    def build(self):
-        """Builds the comments by calling `pypandoc` for a batch of comments and
+    def convert(self):
+        """Converts the comments by calling `pypandoc` for a batch of comments and
         then splitting them back into individual comments.
+
+        This method must be called only once after a last call to
+        ``put_comment()`` and before a first call to ``get_next_comment()``.
         """
 
         converted_doc = pypandoc.convert_text(
@@ -95,7 +102,10 @@ class CommentsBuilder(object):
     def get_next_comment(self):
         """Iterates over individual comments after conversion has been done.
         This method returns converted comments in same order as they where
-        initially put into this builder.
+        initially put into this converter.
+
+        This method may be called one or more times after calling ``convert()``,
+        if this method is called before ``convert()`` its behavior is undefined.
 
         Returns:
             str: A converted comment
@@ -112,14 +122,14 @@ class CommentsBuilder(object):
         def _format(m):
             return "`{}`".format(m.group('text'))
 
-        return self._replace(comment, CommentsBuilder._PROTO_LINK_RE, _format)
+        return self._replace(comment, CommentsConverter._PROTO_LINK_RE, _format)
 
     def _replace_relative_link(self, comment):
         def _format(m):
             return "[{}](https://cloud.google.com{})".format(m.group('text'),
                                                              m.group('uri'))
 
-        return self._replace(comment, CommentsBuilder._RELATIVE_LINK_RE,
+        return self._replace(comment, CommentsConverter._RELATIVE_LINK_RE,
                              _format)
 
     def _insert_spaces(self, comment):
@@ -136,7 +146,7 @@ class CommentsBuilder(object):
             return "{} {}".format(m.group('newlines'), m.group('followup'))
 
         # After replacement, add a leading space
-        return " " + self._replace(comment, CommentsBuilder._NEW_LINES, _format)
+        return " " + self._replace(comment, CommentsConverter._NEW_LINES, _format)
 
     def _replace(self, comment, pattern, repl_fn):
         index = 0
@@ -166,7 +176,7 @@ def convert_desc(source_desc, dest_desc):
     with open(source_desc, 'rb') as f:
         desc_set.ParseFromString(f.read())
 
-    cb = CommentsBuilder()
+    cb = CommentsConverter()
 
     for file_descriptor_proto in desc_set.file:
         sc_info = file_descriptor_proto.source_code_info
@@ -177,7 +187,7 @@ def convert_desc(source_desc, dest_desc):
             for c in location.leading_detached_comments:
                 cb.put_comment(c)
 
-    cb.build()
+    cb.convert()
 
     for file_descriptor_proto in desc_set.file:
         sc_info = file_descriptor_proto.source_code_info

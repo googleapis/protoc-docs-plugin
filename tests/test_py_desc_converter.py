@@ -45,14 +45,13 @@ class PythonDocsConversionTests(unittest.TestCase):
             desc_set.ParseFromString(f.read())
 
         lint_errors = []
-        comment_count = 0
-        for comment in gather_comments_from_descriptor_set(desc_set):
+        count = 0
+        for count, comment in enumerate(gather_comments_from_desc_set(desc_set)):
             lint_errors.extend(restructuredtext_lint.lint(comment))
-            comment_count += 1
 
         print(lint_errors)
         assert len(lint_errors) == 0
-        assert comment_count == 1913
+        assert count == 1913
 
     def test_proto_link_re(self):
         valid_tests = [
@@ -67,7 +66,7 @@ class PythonDocsConversionTests(unittest.TestCase):
             "[][Foo]",
             "[Foo](baz)"
         ]
-        self._test_pattern(py_desc_converter.CommentsBuilder._PROTO_LINK_RE,
+        self._test_pattern(py_desc_converter.CommentsConverter._PROTO_LINK_RE,
                            valid_tests, invalid_tests)
 
     def test_relative_link_re(self):
@@ -84,7 +83,7 @@ class PythonDocsConversionTests(unittest.TestCase):
             "[Foo](foo/bar)",
             "[link](https://foo)",
         ]
-        self._test_pattern(py_desc_converter.CommentsBuilder._RELATIVE_LINK_RE,
+        self._test_pattern(py_desc_converter.CommentsConverter._RELATIVE_LINK_RE,
                            valid_tests, invalid_tests)
 
     @classmethod
@@ -104,7 +103,7 @@ class PythonDocsConversionTests(unittest.TestCase):
         pypandoc.pandoc_download.download_pandoc(version='1.19.2')
 
 
-def gather_comments_from_descriptor_set(desc_set):
+def gather_comments_from_desc_set(desc_set):
     for file_descriptor_proto in desc_set.file:
         if not file_descriptor_proto.source_code_info:
             continue

@@ -27,7 +27,7 @@ pandoc_binary(
 
 py_binary(
     name = "docs_plugin",
-    main = "protoc_docs/bin/py_docstring.py",
+    main = "protoc_docs/bin/py_docstring_pandoc.py",
     srcs = glob(["protoc_docs/**/*.py"]),
     visibility = ["//visibility:public"],
     data = [":pandoc_binary"],
@@ -39,7 +39,7 @@ py_binary(
 
 py_binary(
     name = "docs_desc_converter",
-    main = "protoc_docs/bin/py_desc_converter.py",
+    main = "protoc_docs/bin/py_desc_converter_pandoc.py",
     srcs = glob(["protoc_docs/**/*.py"]),
     visibility = ["//visibility:public"],
     data = [":pandoc_binary"],

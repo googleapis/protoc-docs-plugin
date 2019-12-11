@@ -11,3 +11,6 @@ exclude_lines =
     def __repr__
     if __name__ == '__main__'
     https://cloud.google.com
+omit =
+  protoc_docs/bin/py_desc_converter_pandoc.py
+  protoc_docs/bin/py_docstring_pandoc.py

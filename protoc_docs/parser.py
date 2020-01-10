@@ -17,6 +17,7 @@ from __future__ import absolute_import
 import textwrap
 
 from protoc_docs.code import MessageStructure
+from google.protobuf import descriptor_pb2
 from google.protobuf.compiler.plugin_pb2 import CodeGeneratorRequest
 
 
@@ -34,6 +35,7 @@ class CodeGeneratorParser(object):
     Raises
         TypeError: If the argument is not a CodeGeneratorRequest.
     """
+
     def __init__(self, request):
         if not isinstance(request, CodeGeneratorRequest):
             type_sent = type(request).__name__
@@ -143,6 +145,13 @@ class CodeGeneratorParser(object):
                 objects are hashable and therefore may safely be added
                 to a set to handle de-duplication.
         """
+
+        # Comments over message options don't have a well-defined meaning in
+        # terms of generated documentation, and parsing them is difficult,
+        # so we just don't try.
+        if isinstance(struct, descriptor_pb2.MessageOptions):  # pragma: NO COVER
+            return                                             # pragma: NO COVER
+
         # The first two ints in the path represent what kind of thing
         # the comment is attached to (message, enum, or service) and the
         # order of declaration in the file.

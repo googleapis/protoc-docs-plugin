@@ -149,8 +149,8 @@ class CodeGeneratorParser(object):
         # Comments over message options don't have a well-defined meaning in
         # terms of generated documentation, and parsing them is difficult,
         # so we just don't try.
-        if isinstance(struct, descriptor_pb2.MessageOptions):
-            return
+        if isinstance(struct, descriptor_pb2.MessageOptions):  # pragma: NO COVER
+            return                                             # pragma: NO COVER
 
         # The first two ints in the path represent what kind of thing
         # the comment is attached to (message, enum, or service) and the

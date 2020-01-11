@@ -145,13 +145,6 @@ class CodeGeneratorParser(object):
                 objects are hashable and therefore may safely be added
                 to a set to handle de-duplication.
         """
-
-        # Comments over message options don't have a well-defined meaning in
-        # terms of generated documentation, and parsing them is difficult,
-        # so we just don't try.
-        if isinstance(struct, descriptor_pb2.MessageOptions):  # pragma: NO COVER
-            return                                             # pragma: NO COVER
-
         # The first two ints in the path represent what kind of thing
         # the comment is attached to (message, enum, or service) and the
         # order of declaration in the file.
@@ -162,7 +155,15 @@ class CodeGeneratorParser(object):
         for field in [i[0] for i in struct.ListFields()]:
             if field.number == path[0]:
                 field_name = field.name
-        child = getattr(struct, field_name)[path[1]]
+
+        # Comments over message options don't have a well-defined meaning in
+        # terms of generated documentation, and parsing them is difficult,
+        # so we just don't try.
+        try:
+            child = getattr(struct, field_name)[path[1]]
+        except TypeError:  # pragma: NO COVER
+            return         # pragma: NO COVER
+
         path = path[2:]
 
         # Ignore enums.

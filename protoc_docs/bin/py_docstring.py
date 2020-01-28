@@ -64,7 +64,7 @@ def main(input_file=sys.stdin, output_file=sys.stdout):
         answer.append(CodeGeneratorResponse.File(
             name=fn.replace('.proto', '_pb2.py'),
             insertion_point='class_scope:%s' % struct.name,
-            content='\n__doc__ = """{docstring}""",'.format(
+            content=',\n__doc__ = """{docstring}""",'.format(
                 docstring=struct.get_python_docstring(meta_docstrings[index]),
             ),
         ))

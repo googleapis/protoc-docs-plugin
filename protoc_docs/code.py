@@ -105,10 +105,12 @@ class MessageStructure(object):
         return meta_docstring
 
     def get_python_docstring(self, docstring = None):
-        tw = textwrap.TextWrapper(
+        tw8 = textwrap.TextWrapper(
             initial_indent=' ' * 8,
             subsequent_indent=' ' * 8,
         )
+
+        tw0 = textwrap.TextWrapper()
 
         meta_docstring = docstring if docstring else self.get_meta_docstring()
 
@@ -119,7 +121,7 @@ class MessageStructure(object):
         meta_vals = meta_docstring.split(MessageStructure._BATCH_TOKEN)
         meta_index = 0
         if self.docstring:
-            answer += meta_vals[meta_index]
+            answer += '\n'.join(tw0.wrap(meta_vals[meta_index]))
             meta_index += 1
             if len(self.members):
                 answer += '\n'
@@ -131,7 +133,7 @@ class MessageStructure(object):
         while meta_index < len(meta_vals) and keys_index < len(keys):
             v = meta_vals[meta_index]
             k = keys[keys_index]
-            answer += '    %s:\n%s\n' %  (k, '\n'.join(tw.wrap(v)))
+            answer += '    %s:\n%s\n' %  (k, '\n'.join(tw8.wrap(v)))
             meta_index += 1
             keys_index += 1
 

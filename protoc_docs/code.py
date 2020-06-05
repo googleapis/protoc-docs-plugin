@@ -124,7 +124,7 @@ class MessageStructure(object):
             answer += '\n'.join(tw0.wrap(meta_vals[meta_index]))
             meta_index += 1
             if len(self.members):
-                answer += '\n'
+                answer += '\n\n'
         if len(self.members):
             answer += 'Attributes:\n'
 

@@ -30,7 +30,7 @@ setuptools.setup(
     url='https://github.com/googleapis/protoc-docs-plugin',
     license='Apache-2.0',
     install_requires=(
-        'protobuf >= 3.3.0',
+        'protobuf >= 3.12.2',
         'pypandoc >= 1.4',
     ),
     packages=setuptools.find_packages(),

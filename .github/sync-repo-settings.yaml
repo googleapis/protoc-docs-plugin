@@ -1,11 +1,10 @@
-rebaseMergeAllowed: false
+rebaseMergeAllowed: true
 squashMergeAllowed: true
 mergeCommitAllowed: false
 branchProtectionRules:
 - pattern: master
   isAdminEnforced: true
   requiredStatusCheckContexts:
-    - 'Kokoro'
     - 'ci/circleci: unit-python2.7'
     - 'ci/circleci: unit-python3.5'
     - 'ci/circleci: unit-python3.6'

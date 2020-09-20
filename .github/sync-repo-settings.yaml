@@ -6,6 +6,10 @@ branchProtectionRules:
   isAdminEnforced: true
   requiredStatusCheckContexts:
     - 'Kokoro'
+    - 'ci/circleci: unit-python2.7'
+    - 'ci/circleci: unit-python3.5'
+    - 'ci/circleci: unit-python3.6'
+    - 'ci/circleci: unit-python3.7'
     - 'cla/google'
   requiredApprovingReviewCount: 1
   requiresCodeOwnerReviews: true

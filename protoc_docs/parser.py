@@ -178,12 +178,15 @@ class CodeGeneratorParser(object):
 
         # If applicable, create the MessageStructure object for this.
         if not message_structure:
-            message_structure = MessageStructure.get_or_create(
-                name='{pkg}.{name}'.format(
+            if struct.package:
+                name = '{pkg}.{name}'.format(
                     name=child.name,
                     pkg=struct.package,
-                ),
-            )
+                )
+            else: 
+                name = child.name
+            message_structure = MessageStructure.get_or_create(name)
+
 
         # If the length of the path is 2 or greater, call this method
         # recursively.
@@ -208,6 +211,8 @@ class CodeGeneratorParser(object):
         # documentation.
         if message_structure.name.endswith(child.name):
             message_structure.docstring = docstring
+        elif child.DESCRIPTOR.name in ("OneofDescriptorProto", "FieldDescriptorProto"):
+            message_structure.members[child.name] = docstring
         elif self._is_mixed_case(child.name):
             message_structure = MessageStructure.get_or_create(
                 name='{parent}.{name}'.format(

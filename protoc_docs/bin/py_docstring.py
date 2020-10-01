@@ -76,6 +76,7 @@ def main(input_file=sys.stdin, output_file=sys.stdout):
             content='',
         ))
     cgr = CodeGeneratorResponse(file=answer)
+    cgr.supported_features = CodeGeneratorResponse.FEATURE_PROTO3_OPTIONAL
     output_file.write(cgr.SerializeToString())
 
 
